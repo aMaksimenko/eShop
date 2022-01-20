@@ -1,5 +1,5 @@
-﻿using MVC.Dtos;
-using MVC.Models.Enums;
+﻿using MVC.Models.Enums;
+using MVC.Models.Requests;
 using MVC.Services.Interfaces;
 using MVC.ViewModels;
 
@@ -31,10 +31,11 @@ public class CatalogService : ICatalogService
         {
             filters.Add(CatalogTypeFilter.Type, type.Value);
         }
-        
-        var result = await _httpClient.SendAsync<Catalog, PaginatedItemsRequest<CatalogTypeFilter>>($"{_settings.Value.CatalogUrl}/items",
-           HttpMethod.Post, 
-           new PaginatedItemsRequest<CatalogTypeFilter>()
+
+        var result = await _httpClient.SendAsync<Catalog, PaginatedItemsRequest<CatalogTypeFilter>>(
+            $"{_settings.Value.CatalogUrl}/items",
+            HttpMethod.Post,
+            new PaginatedItemsRequest<CatalogTypeFilter>()
             {
                 PageIndex = page,
                 PageSize = take,
@@ -46,41 +47,55 @@ public class CatalogService : ICatalogService
 
     public async Task<IEnumerable<SelectListItem>> GetBrands()
     {
-        await Task.Delay(300);
-        var list = new List<SelectListItem>
+        var list = new List<SelectListItem>()
         {
             new SelectListItem()
             {
-                Value = "0",
-                Text = "brand 1"
-            },
-            new SelectListItem()
-            {
-                Value = "1",
-                Text = "brand 2"
+                Text = "All"
             }
         };
+        var result = await _httpClient.SendAsync<IEnumerable<CatalogBrand>, string>(
+            $"{_settings.Value.CatalogUrl}/getBrands",
+            HttpMethod.Post,
+            null);
+
+        foreach (var catalogBrand in result)
+        {
+            list.Add(
+                new SelectListItem()
+                {
+                    Value = catalogBrand.Id.ToString(),
+                    Text = catalogBrand.Brand
+                });
+        }
 
         return list;
     }
 
     public async Task<IEnumerable<SelectListItem>> GetTypes()
     {
-        await Task.Delay(300);
-        var list = new List<SelectListItem>
+        var list = new List<SelectListItem>()
         {
             new SelectListItem()
             {
-                Value = "0",
-                Text = "type 1"
-            },
-            
-            new SelectListItem()
-            {
-                Value = "1",
-                Text = "type 2"
+                Text = "All"
             }
         };
+        var result = await _httpClient.SendAsync<IEnumerable<CatalogType>, string>(
+            $"{_settings.Value.CatalogUrl}/getTypes",
+            HttpMethod.Post,
+            null);
+
+        foreach (var catalogBrand in result)
+        {
+            list.Add(
+                new SelectListItem()
+                {
+                    Value = catalogBrand.Id.ToString(),
+                    Text = catalogBrand.Type
+                });
+        }
+
 
         return list;
     }

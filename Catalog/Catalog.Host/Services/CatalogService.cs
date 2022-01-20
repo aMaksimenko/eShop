@@ -23,39 +23,99 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
         _mapper = mapper;
     }
 
-    public async Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsAsync(int pageSize, int pageIndex, Dictionary<CatalogTypeFilter, int>? filters)
+    public async Task<PaginatedItemsResponse<CatalogItemDto>?> GetCatalogItemsAsync(
+        int pageSize,
+        int pageIndex,
+        Dictionary<CatalogTypeFilter, int>? filters)
     {
-        return await ExecuteSafe(async () =>
-        {
-            int? brandFilter = null;
-            int? typeFilter = null;
-
-            if (filters != null)
+        return await ExecuteSafe(
+            async () =>
             {
-                if (filters.TryGetValue(CatalogTypeFilter.Brand, out var brand))
+                int? brandFilter = null;
+                int? typeFilter = null;
+
+                if (filters != null)
                 {
-                    brandFilter = brand;
+                    if (filters.TryGetValue(CatalogTypeFilter.Brand, out var brand))
+                    {
+                        brandFilter = brand;
+                    }
+
+                    if (filters.TryGetValue(CatalogTypeFilter.Type, out var type))
+                    {
+                        typeFilter = type;
+                    }
                 }
 
-                if (filters.TryGetValue(CatalogTypeFilter.Type, out var type))
+                var result = await _catalogItemRepository.GetByPageAsync(pageIndex, pageSize, brandFilter, typeFilter);
+
+                if (result == null)
                 {
-                    typeFilter = type;
+                    return null;
                 }
-            }
 
-            var result = await _catalogItemRepository.GetByPageAsync(pageIndex, pageSize, brandFilter, typeFilter);
-            if (result == null)
-            {
-                return null;
-            }
+                return new PaginatedItemsResponse<CatalogItemDto>()
+                {
+                    Count = result.TotalCount,
+                    Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList(),
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
+                };
+            });
+    }
 
-            return new PaginatedItemsResponse<CatalogItemDto>()
+    public async Task<CatalogItemDto> GetByIdAsync(int id)
+    {
+        return await ExecuteSafe(
+            async () =>
             {
-                Count = result.TotalCount,
-                Data = result.Data.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList(),
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            };
-        });
+                var result = await _catalogItemRepository.GetByIdAsync(id);
+
+                return _mapper.Map<CatalogItemDto>(result);
+            });
+    }
+
+    public async Task<IEnumerable<CatalogItemDto>> GetByBrandAsync(string brandTitle)
+    {
+        return await ExecuteSafe(
+            async () =>
+            {
+                var result = await _catalogItemRepository.GetByBrandAsync(brandTitle);
+
+                return result.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList();
+            });
+    }
+
+    public async Task<IEnumerable<CatalogItemDto>> GetByTypeAsync(string typeTitle)
+    {
+        return await ExecuteSafe(
+            async () =>
+            {
+                var result = await _catalogItemRepository.GetByTypeAsync(typeTitle);
+
+                return result.Select(s => _mapper.Map<CatalogItemDto>(s)).ToList();
+            });
+    }
+
+    public async Task<IEnumerable<CatalogBrandDto>> GetBrandsAsync()
+    {
+        return await ExecuteSafe(
+            async () =>
+            {
+                var result = await _catalogItemRepository.GetBrandsAsync();
+
+                return result.Select(s => _mapper.Map<CatalogBrandDto>(s)).ToList();
+            });
+    }
+
+    public async Task<IEnumerable<CatalogTypeDto>> GetTypesAsync()
+    {
+        return await ExecuteSafe(
+            async () =>
+            {
+                var result = await _catalogItemRepository.GetTypesAsync();
+
+                return result.Select(s => _mapper.Map<CatalogTypeDto>(s)).ToList();
+            });
     }
 }
