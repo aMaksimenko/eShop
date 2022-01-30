@@ -1,3 +1,4 @@
+using System.Threading;
 using Catalog.Host.Data.Entities;
 
 namespace Catalog.UnitTests.Services;
@@ -22,7 +23,7 @@ public class CatalogBrandServiceTest
         _logger = new Mock<ILogger<CatalogBrandService>>();
 
         var dbContextTransaction = new Mock<IDbContextTransaction>();
-        _dbContextWrapper.Setup(s => s.BeginTransaction()).Returns(dbContextTransaction.Object);
+        _dbContextWrapper.Setup(s => s.BeginTransactionAsync(It.IsAny<CancellationToken>())).ReturnsAsync(dbContextTransaction.Object);
 
         _catalogBrandService = new CatalogBrandService(
             _dbContextWrapper.Object,

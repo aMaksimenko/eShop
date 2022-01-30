@@ -19,16 +19,16 @@ public class CatalogTypeService : BaseDataService<ApplicationDbContext>, ICatalo
 
     public Task<int?> CreateAsync(string title)
     {
-        return ExecuteSafe(() => _catalogTypeRepository.CreateAsync(title));
+        return ExecuteSafeAsync(() => _catalogTypeRepository.CreateAsync(title));
     }
 
     public Task<bool> UpdateAsync(int id, string title)
     {
-        return ExecuteSafe(() => _catalogTypeRepository.UpdateAsync(id, title));
+        return ExecuteSafeAsync(() => _catalogTypeRepository.UpdateAsync(id, title));
     }
 
     public Task<bool> DeleteAsync(int id)
     {
-        return ExecuteSafe(() => _catalogTypeRepository.DeleteAsync(id));
+        return ExecuteSafeAsync(() => _catalogTypeRepository.DeleteAsync(id));
     }
 }

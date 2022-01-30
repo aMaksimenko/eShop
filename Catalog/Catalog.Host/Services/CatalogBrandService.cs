@@ -19,16 +19,16 @@ public class CatalogBrandService : BaseDataService<ApplicationDbContext>, ICatal
 
     public Task<int?> CreateAsync(string title)
     {
-        return ExecuteSafe(() => _catalogBrandRepository.CreateAsync(title));
+        return ExecuteSafeAsync(() => _catalogBrandRepository.CreateAsync(title));
     }
 
     public Task<bool> UpdateAsync(int id, string title)
     {
-        return ExecuteSafe(() => _catalogBrandRepository.UpdateAsync(id, title));
+        return ExecuteSafeAsync(() => _catalogBrandRepository.UpdateAsync(id, title));
     }
 
     public Task<bool> DeleteAsync(int id)
     {
-        return ExecuteSafe(() => _catalogBrandRepository.DeleteAsync(id));
+        return ExecuteSafeAsync(() => _catalogBrandRepository.DeleteAsync(id));
     }
 }

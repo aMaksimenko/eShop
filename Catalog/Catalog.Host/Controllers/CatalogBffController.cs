@@ -38,6 +38,7 @@ public class CatalogBffController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CatalogItemDto), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetById(int id)
     {
@@ -47,6 +48,7 @@ public class CatalogBffController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CatalogItemDto), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetByBrand(string brandTitle)
     {
@@ -56,6 +58,7 @@ public class CatalogBffController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CatalogItemDto), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetByType(string typeTitle)
     {
@@ -65,6 +68,7 @@ public class CatalogBffController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<CatalogBrandDto>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetBrands()
     {
@@ -74,6 +78,7 @@ public class CatalogBffController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<CatalogTypeDto>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetTypes()
     {

@@ -28,7 +28,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
         int pageIndex,
         Dictionary<CatalogTypeFilter, int>? filters)
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 int? brandFilter = null;
@@ -66,7 +66,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<CatalogItemDto> GetByIdAsync(int id)
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 var result = await _catalogItemRepository.GetByIdAsync(id);
@@ -77,7 +77,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<IEnumerable<CatalogItemDto>> GetByBrandAsync(string brandTitle)
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 var result = await _catalogItemRepository.GetByBrandAsync(brandTitle);
@@ -88,7 +88,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<IEnumerable<CatalogItemDto>> GetByTypeAsync(string typeTitle)
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 var result = await _catalogItemRepository.GetByTypeAsync(typeTitle);
@@ -99,7 +99,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<IEnumerable<CatalogBrandDto>> GetBrandsAsync()
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 var result = await _catalogItemRepository.GetBrandsAsync();
@@ -110,7 +110,7 @@ public class CatalogService : BaseDataService<ApplicationDbContext>, ICatalogSer
 
     public async Task<IEnumerable<CatalogTypeDto>> GetTypesAsync()
     {
-        return await ExecuteSafe(
+        return await ExecuteSafeAsync(
             async () =>
             {
                 var result = await _catalogItemRepository.GetTypesAsync();

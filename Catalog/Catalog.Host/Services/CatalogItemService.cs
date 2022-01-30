@@ -26,7 +26,7 @@ public class CatalogItemService : BaseDataService<ApplicationDbContext>, ICatalo
         int catalogTypeId,
         string pictureFileName)
     {
-        return ExecuteSafe(
+        return ExecuteSafeAsync(
             () => _catalogItemRepository.CreateAsync(
                 name,
                 description,
@@ -47,7 +47,7 @@ public class CatalogItemService : BaseDataService<ApplicationDbContext>, ICatalo
         int catalogTypeId,
         string pictureFileName)
     {
-        return ExecuteSafe(
+        return ExecuteSafeAsync(
             () => _catalogItemRepository.UpdateAsync(
                 id,
                 name,
@@ -61,6 +61,6 @@ public class CatalogItemService : BaseDataService<ApplicationDbContext>, ICatalo
 
     public Task<bool> DeleteAsync(int id)
     {
-        return ExecuteSafe(() => _catalogItemRepository.DeleteAsync(id));
+        return ExecuteSafeAsync(() => _catalogItemRepository.DeleteAsync(id));
     }
 }
