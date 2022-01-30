@@ -7,14 +7,15 @@ services:
       context: .
       dockerfile: Catalog/Catalog.Host/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5000
-      - ConnectionString=server=host.docker.internal;port=5433;database=catalog;uid=postgres;password=postgres;
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ASPNETCORE_URLS=http://+:5000
+       - ConnectionString=server=www.alevelwebsite.com;port=5433;database=catalog;uid=postgres;password=postgres;
+       - Authorization__Authority=http://www.alevelwebsite.com:5002
+       - PathBase=http://www.alevelwebsite.com:5000
     depends_on:
       - postgres
     ports:
-      - 5005:5000
-
+      - 5000:5000
   web.mvc:
     container_name: lde.web.mvc
     build:
@@ -23,12 +24,28 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5001
-      - CatalogUrl=http://host.docker.internal:5005/api/v1/catalogbff
+      - CatalogUrl=http://www.alevelwebsite.com:5000/api/v1/catalogbff
+      - Authorization__Authority=http://www.alevelwebsite.com:5002
+      - IdentityUrl=http://www.alevelwebsite.com:5002
+      - CallBackUrl=http://www.alevelwebsite.com/
+      - RedirectUri=http://www.alevelwebsite.com/signin-oidc
     depends_on:
       - catalog.api
+      - identityserver
     ports:
       - 5001:5001
-
+  identityserver:
+    container_name: lde.identityserver
+    build:
+      context: .
+      dockerfile: IdentityServer/IdentityServer/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5002
+      - MvcUrl=http://www.alevelwebsite.com
+      - CatalogApi=http://www.alevelwebsite.com:5000
+    ports:
+      - 5002:5002
   nginx:
     image: nginx
     container_name: lde.nginx
@@ -37,7 +54,6 @@ services:
     volumes:
       - ./Proxy/gateway/nginx/conf.d:/etc/nginx/conf.d
       - ./Proxy/assets:/var/www/assets
-
   pgadmin4:
     image: dpage/pgadmin4
     container_name: lde.pgadmin4
@@ -47,8 +63,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - 8001:80
-
+      - 8001:80 
   postgres:
     image: postgres
     container_name: lde.postgres
@@ -56,3 +71,6 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5433:5432
+networks:
+  dockernet:
+    external: true
