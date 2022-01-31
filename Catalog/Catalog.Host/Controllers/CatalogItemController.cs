@@ -23,6 +23,15 @@ public class CatalogItemController : ControllerBase
         _catalogItemService = catalogItemService;
     }
 
+    [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    public Task<IActionResult> TestInternal()
+    {
+        _logger.LogInformation("TestInternal completed");
+
+        return Task.FromResult<IActionResult>(Ok());
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(AddItemResponse<int?>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Add(CreateProductRequest request)

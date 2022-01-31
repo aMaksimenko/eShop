@@ -7,16 +7,23 @@ namespace MVC.Controllers;
 public class CatalogController : Controller
 {
     private readonly ICatalogService _catalogService;
+    private readonly IBasketService _basketService;
 
-    public CatalogController(ICatalogService catalogService)
+    public CatalogController(
+        ICatalogService catalogService,
+        IBasketService basketService)
     {
         _catalogService = catalogService;
+        _basketService = basketService;
     }
 
     public async Task<IActionResult> Index(int? brandFilterApplied, int? typesFilterApplied, int? page, int? itemsPage)
     {
         page ??= 0;
         itemsPage ??= 9;
+
+        await _basketService.LogUserAsync();
+        await _basketService.LogAnonymousAsync();
 
         var catalog = await _catalogService.GetCatalogItems(
             page.Value,
